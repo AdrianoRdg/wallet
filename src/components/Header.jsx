@@ -7,15 +7,20 @@ class Header extends React.Component {
     const { user: { email } } = this.props;
     return (
       <header>
-        <p data-testid="email-field">
-          { `Email: ${email}`}
+        <p>
+          TrybeWallet
         </p>
-        <p data-testid="total-field">
-          0
-        </p>
-        <p data-testid="header-currency-field">
-          BRL
-        </p>
+        <div>
+          <p data-testid="email-field">
+            { `Email: ${email}`}
+          </p>
+          <p data-testid="total-field">
+            0
+          </p>
+          <p data-testid="header-currency-field">
+            BRL
+          </p>
+        </div>
       </header>
     );
   }
