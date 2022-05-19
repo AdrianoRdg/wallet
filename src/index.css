@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #2D333B;
+  color: white;
 }
 
 header {
@@ -19,8 +21,25 @@ header {
 header div {
   display: flex;
   align-items: center;
-  width: 60%;
+  width: 50%;
   justify-content: space-between;
   background-color: #282c34;
   color: white;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 40px;
 }
