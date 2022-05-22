@@ -11,7 +11,7 @@ class Wallet extends React.Component {
       value: 0,
       description: '',
       currency: 'USD',
-      method: '',
+      method: 'Dinheiro',
       tag: '',
       id: 0,
     };
@@ -43,7 +43,7 @@ class Wallet extends React.Component {
   }
 
   render() {
-    const { currency } = this.props;
+    const { currency, expenses } = this.props;
     const {
       value,
       description,
@@ -121,6 +121,63 @@ class Wallet extends React.Component {
           </button>
 
         </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Tag</th>
+              <th>Método de pagamento</th>
+              <th>Valor</th>
+              <th>Moeda</th>
+              <th>Câmbio utilizado</th>
+              <th>Valor convertido</th>
+              <th>Moeda de conversão</th>
+              <th>Editar/Excluir</th>
+            </tr>
+          </thead>
+          { expenses.map((tableItem) => (
+            <tbody key={ tableItem.id }>
+              <tr>
+                <td>
+                  {tableItem.description}
+                </td>
+
+                <td>
+                  {tableItem.tag}
+                </td>
+
+                <td>
+                  {tableItem.method}
+                </td>
+
+                <td>
+                  {Number(tableItem.value).toFixed(2)}
+                </td>
+
+                <td>
+                  {tableItem.exchangeRates[tableItem.currency].name}
+                </td>
+
+                <td>
+                  {Number(tableItem.exchangeRates[tableItem.currency].ask).toFixed(2)}
+                </td>
+
+                <td>
+                  {
+                    (Number(tableItem.value)
+                    * Number(tableItem.exchangeRates[tableItem.currency].ask))
+                      .toFixed(2)
+                  }
+                </td>
+
+                <td>
+                  Real
+                </td>
+              </tr>
+            </tbody>
+          )) }
+        </table>
       </div>
     );
   }
@@ -133,6 +190,7 @@ Wallet.propTypes = {
 
 const mapStateToProps = (state) => ({
   currency: state.wallet.currencies,
+  expenses: state.wallet.expenses,
 });
 
 export default connect(mapStateToProps)(Wallet);

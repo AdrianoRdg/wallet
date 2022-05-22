@@ -43,3 +43,13 @@ header div {
   border-radius: 10px;
   padding: 40px;
 }
+
+table {
+  border-collapse: collapse;
+  border: 1px solid white;
+}
+
+td, th {
+  border: 1px solid white;
+  width: 130px;
+}
