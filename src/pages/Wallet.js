@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Header from '../components/Header';
-import { fetchCoins, fetchExchange } from '../actions';
+import { fetchCoins, fetchExchange, removeItem } from '../actions';
 
 class Wallet extends React.Component {
   constructor() {
     super();
     this.state = {
-      value: 0,
+      value: '',
       description: '',
       currency: 'USD',
       method: 'Dinheiro',
@@ -28,13 +28,19 @@ class Wallet extends React.Component {
     const { dispatch } = this.props;
     dispatch(fetchExchange(this.state));
     this.setState((prev) => ({
-      value: 0,
+      value: '',
       description: '',
       currency: 'USD',
       method: 'Dinheiro',
       tag: '',
       id: prev.id + 1,
     }));
+  }
+
+  removeItemFromStore = ({ target }) => {
+    const { value } = target;
+    const { dispatch } = this.props;
+    dispatch(removeItem(value));
   }
 
   componentDidMount = async () => {
@@ -44,10 +50,7 @@ class Wallet extends React.Component {
 
   render() {
     const { currency, expenses } = this.props;
-    const {
-      value,
-      description,
-    } = this.state;
+    const { value, description } = this.state;
     return (
       <div>
         <Header />
@@ -173,6 +176,17 @@ class Wallet extends React.Component {
 
                 <td>
                   Real
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    data-testid="delete-btn"
+                    value={ tableItem.id }
+                    onClick={ this.removeItemFromStore }
+                  >
+                    Excluir
+                  </button>
                 </td>
               </tr>
             </tbody>
