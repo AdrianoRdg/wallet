@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Header from '../components/Header';
-import { fetchCoins, fetchExchange, removeItem } from '../actions';
+import { fetchCoins, fetchExchange, removeItem, editExpense } from '../actions';
+import Table from '../components/Table';
 
 class Wallet extends React.Component {
   constructor() {
@@ -12,8 +13,10 @@ class Wallet extends React.Component {
       description: '',
       currency: 'USD',
       method: 'Dinheiro',
-      tag: '',
+      tag: 'Alimentação',
       id: 0,
+      edit: false,
+      editID: 0,
     };
   }
 
@@ -24,16 +27,30 @@ class Wallet extends React.Component {
     });
   }
 
-  sendStateButton = () => {
+  addExpenseButton = () => {
     const { dispatch } = this.props;
-    dispatch(fetchExchange(this.state));
-    this.setState((prev) => ({
+    // const { value, description } = this.state;
+    // if (value <= 0) return global.alert('Não é possivel adicionar despesas sem valor');
+    // if (!description) return global.alert('Adicione descrição');
+    const { id, value, description, currency, method, tag } = this.state;
+    const expense = {
+      id,
+      value,
+      description,
+      currency,
+      method,
+      tag,
+    };
+
+    dispatch(fetchExchange(expense));
+
+    this.setState((prevState) => ({
       value: '',
       description: '',
-      currency: 'USD',
-      method: 'Dinheiro',
-      tag: '',
-      id: prev.id + 1,
+      currency: prevState.currency,
+      method: prevState.method,
+      tag: prevState.tag,
+      id: prevState.id + 1,
     }));
   }
 
@@ -43,6 +60,44 @@ class Wallet extends React.Component {
     dispatch(removeItem(value));
   }
 
+  updtateExpense = (expense) => {
+    const { id, description, tag, method, value, currency } = expense;
+
+    this.setState({
+      value,
+      description,
+      currency,
+      method,
+      tag,
+      editID: id,
+      edit: true,
+    });
+  }
+
+  editExpenseButton = () => {
+    const { dispatch } = this.props;
+    const { value, description, currency, method, tag, editID } = this.state;
+    const expense = {
+      id: editID,
+      value,
+      description,
+      currency,
+      method,
+      tag,
+    };
+
+    dispatch(editExpense(expense));
+
+    this.setState((prevState) => ({
+      value: '',
+      description: '',
+      currency: prevState.currency,
+      method: prevState.method,
+      tag: prevState.tag,
+      edit: false,
+    }));
+  };
+
   componentDidMount = async () => {
     const { dispatch } = this.props;
     dispatch(fetchCoins());
@@ -50,7 +105,7 @@ class Wallet extends React.Component {
 
   render() {
     const { currency, expenses } = this.props;
-    const { value, description } = this.state;
+    const { value, description, method, tag, edit } = this.state;
     return (
       <div>
         <Header />
@@ -79,7 +134,12 @@ class Wallet extends React.Component {
 
           <label htmlFor="currency">
             Moeda
-            <select name="currency" id="currency" onChange={ this.handleState }>
+            <select
+              name="currency"
+              id="currency"
+              data-testid="currency-input"
+              onChange={ this.handleState }
+            >
               { currency.map((coin) => (
                 <option key={ coin } value={ coin }>{coin}</option>
               ))}
@@ -91,6 +151,7 @@ class Wallet extends React.Component {
             <select
               name="method"
               id="method"
+              value={ method }
               data-testid="method-input"
               onChange={ this.handleState }
             >
@@ -105,6 +166,7 @@ class Wallet extends React.Component {
             <select
               name="tag"
               id="tag"
+              value={ tag }
               data-testid="tag-input"
               onChange={ this.handleState }
             >
@@ -116,82 +178,32 @@ class Wallet extends React.Component {
             </select>
           </label>
 
-          <button
-            type="button"
-            onClick={ this.sendStateButton }
-          >
-            Adicionar despesa
-          </button>
+          { edit
+            ? (
+              <button
+                type="button"
+                data-testid="edit-btn"
+                onClick={ this.editExpenseButton }
+              >
+                Editar despesa
+              </button>
+            )
+            : (
+              <button
+                type="button"
+                onClick={ this.addExpenseButton }
+              >
+                Adicionar despesa
+              </button>
+            ) }
 
         </form>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Tag</th>
-              <th>Método de pagamento</th>
-              <th>Valor</th>
-              <th>Moeda</th>
-              <th>Câmbio utilizado</th>
-              <th>Valor convertido</th>
-              <th>Moeda de conversão</th>
-              <th>Editar/Excluir</th>
-            </tr>
-          </thead>
-          { expenses.map((tableItem) => (
-            <tbody key={ tableItem.id }>
-              <tr>
-                <td>
-                  {tableItem.description}
-                </td>
-
-                <td>
-                  {tableItem.tag}
-                </td>
-
-                <td>
-                  {tableItem.method}
-                </td>
-
-                <td>
-                  {Number(tableItem.value).toFixed(2)}
-                </td>
-
-                <td>
-                  {tableItem.exchangeRates[tableItem.currency].name}
-                </td>
-
-                <td>
-                  {Number(tableItem.exchangeRates[tableItem.currency].ask).toFixed(2)}
-                </td>
-
-                <td>
-                  {
-                    (Number(tableItem.value)
-                    * Number(tableItem.exchangeRates[tableItem.currency].ask))
-                      .toFixed(2)
-                  }
-                </td>
-
-                <td>
-                  Real
-                </td>
-
-                <td>
-                  <button
-                    type="button"
-                    data-testid="delete-btn"
-                    value={ tableItem.id }
-                    onClick={ this.removeItemFromStore }
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          )) }
-        </table>
+        <Table
+          expenses={ expenses }
+          removeItem={ this.removeItemFromStore }
+          update={ this.updtateExpense }
+        />
       </div>
     );
   }

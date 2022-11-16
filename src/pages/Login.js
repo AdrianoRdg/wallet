@@ -24,7 +24,6 @@ class Login extends React.Component {
     const { emailField, passwordField } = this.state;
     const charactersQuanty = 6;
 
-    // teste tirado do site https://www.horadecodar.com.br/2020/09/13/como-validar-email-com-javascript/
     const stringEmail = /\S+@\S+\.\S+/;
     const validEmail = stringEmail.test(emailField);
 
@@ -96,5 +95,4 @@ Login.propTypes = {
   }).isRequired,
 };
 
-// export default Login;
 export default connect()(Login);

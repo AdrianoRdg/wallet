@@ -53,3 +53,15 @@ td, th {
   border: 1px solid white;
   width: 130px;
 }
+
+.main-table {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table th {
+  height: 50px;
+  width: 140px;
+}

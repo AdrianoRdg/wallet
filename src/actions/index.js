@@ -2,6 +2,7 @@
 export const changeEmail = (state) => ({ type: 'CHANGE_EMAIL', payload: state });
 export const addCoins = (state) => ({ type: 'ADD_COINS', payload: state });
 export const addExpenses = (value) => ({ type: 'ADD_EXPENSE', payload: value });
+export const editExpense = (value) => ({ type: 'EDIT_EXPENSE', payload: value });
 export const removeItem = (id) => ({ type: 'REMOVE_ITEM', id });
 
 export function fetchCoins() {
