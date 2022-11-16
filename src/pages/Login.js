@@ -28,13 +28,9 @@ class Login extends React.Component {
     const validEmail = stringEmail.test(emailField);
 
     if (passwordField.length >= charactersQuanty && validEmail === true) {
-      this.setState({
-        isDisable: false,
-      });
+      this.setState({ isDisable: false });
     } else {
-      this.setState({
-        isDisable: true,
-      });
+      this.setState({ isDisable: true });
     }
   }
 
